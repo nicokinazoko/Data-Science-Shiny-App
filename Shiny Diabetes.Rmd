@@ -23,7 +23,7 @@ library(plotly)
 ```{r variable}
 data_diabetes <- vroom(here("Diabetes","diabetes.csv"))
 hasil_tes <- unique(data_diabetes[["Outcome"]])
-opsi_parameter <- colnames(data_diabetes)[c(2,3,5,6,7,8)]
+opsi_parameter <- colnames(data_diabetes)[c(1,2,3,5,6,7,8)]
 
 ```
 
@@ -33,8 +33,8 @@ opsi_parameter <- colnames(data_diabetes)[c(2,3,5,6,7,8)]
 ui <- fluidPage(
   
   #judul aplikasi
-  title = "Data Perempuan Diabetes di India di atas 21 Tahun",
-  headerPanel("Diabetes di India"),
+  title = "Data Perempuan Diabetes Pima Indians di atas 21 Tahun",
+  headerPanel("Diabetes Pima Indians"),
   
   # Layout Sidebar dengan input dan output
   sidebarLayout(
@@ -48,14 +48,6 @@ ui <- fluidPage(
                   choices = hasil_tes,
                   multiple = TRUE,
                   selected = option_station[[1]]),
-      
-      # Slider untuk menginput umur
-      sliderInput("integer", "Age:", 
-                min=21, max=81, value=0),
-
-      # Slider untuk menginput jumlah kehamilan
-      sliderInput("integer", "Pregnancies:", 
-                min=0, max=17, value=0),
       
       # Pilihan untuk input kolom perbandingan
       selectInput(inputId = "parameter_x",
