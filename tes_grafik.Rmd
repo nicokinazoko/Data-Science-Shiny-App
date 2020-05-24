@@ -1,0 +1,38 @@
+---
+title: "Grafik"
+author: "Nico"
+date: "5/21/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r }
+library(ggplot2)
+library(here)
+library(vroom)
+
+```
+
+```{r }
+data_diabetes <- vroom(here("Diabetes","diabetes.csv"))
+length(data_diabetes)
+names(data_diabetes)
+jumlah_hamil <- unique(data_diabetes[["Pregnancies"]])
+hasil_tes <- unique(data_diabetes[["Outcome"]])
+```
+
+```{r }
+   data_diabetes %>%
+     filter(Outcome %in% 1)
+
+```
+
+```{r }
+ggplot(data_diabetes, aes(x = Insulin, y = Glucose)) + geom_point()
+
+ggplot(data_diabetes, aes(x = Outcome, y = Insulin)) + geom_point()
+```
+

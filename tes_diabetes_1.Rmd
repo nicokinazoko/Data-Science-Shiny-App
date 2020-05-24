@@ -1,0 +1,95 @@
+---
+title: "Diabetes"
+author: "Nico"
+date: "5/20/2020"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r library}
+library(shiny)
+library(here)
+library(vroom)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+here()
+dr_here()
+```
+
+```{r variable}
+
+data_diabetes <- vroom(here("Projek Data Science","diabetes.csv"))
+jumlah_hamil <- unique(data_diabetes[["Pregnancies"]])
+hasil_tes <- unique(data_diabetes[["Outcome"]])
+umur <- unique(data_diabetes[["Age"]])
+insulin <- unique(data_diabetes[["Insulin"]])
+glukosa <- unique(data_diabetes[["Glucose"]])
+names(data_diabetes)
+```
+
+
+```{r ui}
+#definisi UI untuk slide app
+ui <- fluidPage(
+  
+  #judul aplikasi
+  title = "Data Perempuan Diabetes di India di atas 21 Tahun",
+  headerPanel("Diabetes di India"),
+  
+  # Layout Sidebar dengan input dan output
+  sidebarLayout(
+    
+    # Sidebar untuk demonstrasi dari slider nya
+    sidebarPanel(
+      selectInput(inputId = "")
+    ),
+    
+    # Panel utama untuk menampilkan data
+    mainPanel(
+      
+      # Output berupa table
+      tableOutput("Data_Table")
+    )
+  )
+)
+```
+
+
+```{r server}
+# Mendefinisikan Server untuk Slider
+server <- function(input, output, session) {
+  
+  # Output Reaktif untuk membuat data frame
+ output_values <- reactive({
+
+   # Isi data Frame sebagai summary
+   data.frame(
+     Name = c("Total_Pregnancies", 
+               "Age",
+               "Insulin",
+               "Glucose"),
+     Value = as.character(c(input$Total_Pregnancies, 
+                             input$Age,
+                             input$Insulin,
+                             input$Glucose)),
+     stringsAsFactors=FALSE) 
+ })
+ 
+ output$Data_Table <- renderTable({
+   output_values()
+ })
+ 
+}
+```
+
+
+```{r run}
+shinyApp(ui = ui, server = server, options = list(height = "500px"))
+```
+
+

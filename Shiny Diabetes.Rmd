@@ -1,0 +1,104 @@
+---
+title: "Data Diabetes"
+author: "Nico"
+date: "5/21/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r library}
+library(shiny)
+library(here)
+library(vroom)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+
+```
+
+```{r variable}
+data_diabetes <- vroom(here("Diabetes","diabetes.csv"))
+hasil_tes <- unique(data_diabetes[["Outcome"]])
+opsi_parameter <- colnames(data_diabetes)[c(2,3,5,6,7,8)]
+
+```
+
+
+```{r ui}
+#definisi UI untuk slide app
+ui <- fluidPage(
+  
+  #judul aplikasi
+  title = "Data Perempuan Diabetes di India di atas 21 Tahun",
+  headerPanel("Diabetes di India"),
+  
+  # Layout Sidebar dengan input dan output
+  sidebarLayout(
+    
+    # Sidebar untuk demonstrasi dari slider nya
+    sidebarPanel(
+    
+      # Pilihan untuk memilih apakah positif atau tidak
+      selectInput(inputId = "outcome",
+                  label =  "Outcome",
+                  choices = hasil_tes,
+                  multiple = TRUE,
+                  selected = option_station[[1]]),
+      
+      # Slider untuk menginput umur
+      sliderInput("integer", "Age:", 
+                min=21, max=81, value=0),
+
+      # Slider untuk menginput jumlah kehamilan
+      sliderInput("integer", "Pregnancies:", 
+                min=0, max=17, value=0),
+      
+      # Pilihan untuk input kolom perbandingan
+      selectInput(inputId = "parameter_x",
+                label = "Parameter X",
+                choices = opsi_parameter,
+                selected = "01"),
+      
+      # Pilihan untuk input kolom perbandingan
+      selectInput(inputId = "parameter_y",
+                label = "Parameter Y",
+                choices = opsi_parameter,
+                selected = "05"),      
+      
+    ),
+    
+    # Panel utama untuk menampilkan data
+    mainPanel(
+      
+      # Output berupa plot
+      plotlyOutput(outputId = "aq_plot")
+    )
+  )
+)
+```
+
+
+```{r server}
+# Mendefinisikan Server untuk Slider
+server <- function(input, output, session) {
+   aq_plot <- reactive({
+    data_diabetes %>% 
+       filter(Outcome %in% input$outcome) %>% 
+       ggplot(aes_string(x = input$parameter_x, y = input$parameter_y,colour = "Outcome")) +  geom_line() + labs(x = input$parameter_x,y =input$parameter_y,colour = "Outcome",title = "Pengaruh Diabetes") + theme_light()
+     })
+   
+   output$aq_plot <- renderPlotly({
+   ggplotly(aq_plot())
+ })
+ 
+}
+```
+
+
+```{r run}
+shinyApp(ui = ui, server = server, options = list(height = "500px"))
+```
