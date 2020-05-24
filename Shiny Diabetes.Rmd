@@ -23,7 +23,7 @@ library(plotly)
 ```{r variable}
 data_diabetes <- vroom(here("Diabetes","diabetes.csv"))
 hasil_tes <- unique(data_diabetes[["Outcome"]])
-opsi_parameter <- colnames(data_diabetes)[c(1,2,3,5,6,7,8)]
+opsi_parameter <- colnames(data_diabetes)[c(1,2,3,4,5,6,7,8)]
 
 ```
 
