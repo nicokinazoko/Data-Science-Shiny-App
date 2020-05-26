@@ -47,7 +47,7 @@ ui <- fluidPage(
                   label =  "Outcome",
                   choices = hasil_tes,
                   multiple = TRUE,
-                  selected = option_station[[1]]),
+                  selected = hasil_tes[[1]]),
       
       # Pilihan untuk input kolom perbandingan
       selectInput(inputId = "parameter_x",
@@ -80,7 +80,7 @@ server <- function(input, output, session) {
    aq_plot <- reactive({
     data_diabetes %>% 
        filter(Outcome %in% input$outcome) %>% 
-       ggplot(aes_string(x = input$parameter_x, y = input$parameter_y,colour = "Outcome")) +  geom_line() + labs(x = input$parameter_x,y =input$parameter_y,colour = "Outcome",title = "Pengaruh Diabetes") + theme_light()
+       ggplot(aes_string(x = input$parameter_x, y = input$parameter_y,colour = "Outcome")) +  geom_line() + labs(x = input$parameter_x,y =input$parameter_y,colour = "Outcome",title = "Faktor Diabetes") + theme_light()
      })
    
    output$aq_plot <- renderPlotly({
