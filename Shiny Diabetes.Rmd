@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+1. Import Library yang akan digunakan
 
 ```{r library}
 library(shiny)
@@ -17,14 +18,228 @@ library(vroom)
 library(dplyr)
 library(ggplot2)
 library(plotly)
+library(tidymodels)
 
 ```
 
+2. Definisikan variabel yang akan digunakan
 ```{r variable}
+
+#Import dataset yang akan digunakan
+#Di sini akan digunakan dataset Diabetes dari Kaggle
 data_diabetes <- vroom(here("Diabetes","diabetes.csv"))
+
+#Memecah hasil dari diabetes apakah positif atau tidak
+#Hasil akhir menjadi hanya 0 dan 1
+#0 untuk negatif dan 1 untuk positif
 hasil_tes <- unique(data_diabetes[["Outcome"]])
+
+#Membuat opsi parameter yang akan digunakan di gui
+#disini akan menggunakan 8 kolom yang digunakan sebagai opsi pemilihan parameter
 opsi_parameter <- colnames(data_diabetes)[c(1,2,3,4,5,6,7,8)]
 
+```
+
+3. Mengecek tipe data dari dataset yang digunakan
+```{r data}
+
+glimpse(data_diabetes)
+
+```
+
+4. Mengecek perbandingan rerata dari jumlah kehamilan dengan outcome(diabetes atau tidak) dengan menggunakan grafik
+```{r compare_glucose}
+data_diabetes %>%
+  group_by(Outcome) %>% 
+  summarise(rerata_kehamilan = mean(Pregnancies)) %>% 
+  ggplot(aes(x = Outcome, y = rerata_kehamilan)) +
+  geom_col() + 
+  labs(
+    x = "Outcome Diabetes",
+    y = "Rerata Kehamilan",
+    title = "Data Rerata Kehamilan",
+    subtitle = "Data Diabetes Suku Pima Indians",
+    caption = "Sumber: Kaggle",
+    colour = "Outcome"
+  ) +
+  theme_light()
+```
+
+5. Mengecek perbandingan rerata dari glukosa dengan outcome(diabetes atau tidak) dengan menggunakan grafik
+```{r compare_glucose}
+data_diabetes %>%
+  group_by(Outcome) %>% 
+  summarise(rerata_glukosa = mean(Glucose)) %>% 
+  ggplot(aes(x = Outcome, y = rerata_glukosa)) +
+  geom_col() + 
+  labs(
+    x = "Outcome Diabetes",
+    y = "Rerata Glukosa",
+    title = "Data Rerata Glukosa",
+    subtitle = "Data Diabetes Suku Pima Indians",
+    caption = "Sumber: Kaggle",
+    colour = "Outcome"
+  ) +
+  theme_light()
+```
+
+6. Mengecek perbandingan rerata dari tekanan darah dengan outcome(diabetes atau tidak) dengan menggunakan grafik
+```{r compare_glucose}
+data_diabetes %>%
+  group_by(Outcome) %>% 
+  summarise(rerata_tekanan_darah = mean(BloodPressure)) %>% 
+  ggplot(aes(x = Outcome, y = rerata_tekanan_darah)) +
+  geom_col() + 
+  labs(
+    x = "Outcome Diabetes",
+    y = "Rerata Tekanan Darah",
+    title = "Data Rerata Tekanan Darah",
+    subtitle = "Data Diabetes Suku Pima Indians",
+    caption = "Sumber: Kaggle",
+    colour = "Outcome"
+  ) +
+  theme_light()
+```
+
+
+7. Mengecek perbandingan rerata dari ketebalan kulit dengan outcome(diabetes atau tidak) dengan menggunakan grafik
+```{r compare_glucose}
+data_diabetes %>%
+  group_by(Outcome) %>% 
+  summarise(rerata_ketebalan_kulit = mean(SkinThickness)) %>% 
+  ggplot(aes(x = Outcome, y = rerata_ketebalan_kulit)) +
+  geom_col() + 
+  labs(
+    x = "Outcome Diabetes",
+    y = "Rerata Ketebalan Kulit",
+    title = "Data Rerata Ketebalan Kulit",
+    subtitle = "Data Diabetes Suku Pima Indians",
+    caption = "Sumber: Kaggle",
+    colour = "Outcome"
+  ) +
+  theme_light()
+```
+
+8. Mengecek perbandingan rerata dari jumlah insulin dengan outcome(diabetes atau tidak) dengan menggunakan grafik
+```{r compare_insulin}
+data_diabetes %>%
+  group_by(Outcome) %>% 
+  summarise(rerata_insulin = mean(Insulin)) %>% 
+  ggplot(aes(x = Outcome, y = rerata_insulin)) +
+  geom_col() + 
+  labs(
+    x = "Outcome Diabetes",
+    y = "Rerata Insulin",
+    title = "Data Rerata Insulin",
+    subtitle = "Data Diabetes Suku Pima Indians",
+    caption = "Sumber: Kaggle",
+    colour = "Outcome"
+  ) +
+  theme_light()
+```
+
+
+9. Mengecek perbandingan rerata dari bmi dengan outcome(diabetes atau tidak) dengan menggunakan grafik
+```{r }
+data_diabetes %>%
+  group_by(Outcome) %>% 
+  summarise(rerata_bmi = mean(BMI)) %>% 
+  ggplot(aes(x = Outcome, y = rerata_bmi)) +
+  geom_col() + 
+  labs(
+    x = "Outcome Diabetes",
+    y = "Rerata BMI",
+    title = "Data Rerata BMI",
+    subtitle = "Data Diabetes Suku Pima Indians",
+    caption = "Sumber: Kaggle",
+    colour = "Outcome"
+  ) +
+  theme_light()
+```
+
+
+10. Mengecek perbandingan rerata dari persentase keturunan diabetes dengan outcome(diabetes atau tidak) dengan menggunakan grafik
+```{r compare_keturunan}
+data_diabetes %>%
+  group_by(Outcome) %>% 
+  summarise(rerata_keturunan = mean(DiabetesPedigreeFunction)) %>% 
+  ggplot(aes(x = Outcome, y = rerata_keturunan)) +
+  geom_col() + 
+  labs(
+    x = "Outcome Diabetes",
+    y = "Rerata Keturunan",
+    title = "Data Rerata Keturunan",
+    subtitle = "Data Diabetes Suku Pima Indians",
+    caption = "Sumber: Kaggle",
+    colour = "Outcome"
+  ) +
+  theme_light()
+```
+
+
+
+
+11. Pemecahan data menjadi data training dan data testing
+```{r split_data}
+data_diabetes_split <- initial_split(data_diabetes)
+data_diabetes_split
+```
+
+12. Mengecek data dari data training
+```{r training}
+training(data_diabetes_split)
+```
+
+13. Mengecek data dari data testing
+```{r testing}
+
+testing(data_diabetes_split)
+```
+
+14. Membuat Role dari variabel test untuk sebagai predictor
+```{r }
+
+data_diabetes_recipe <- training(data_diabetes_split) %>% 
+  recipe() %>% 
+  update_role(Outcome, new_role = "outcome") %>% 
+  update_role(Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin,BMI,DiabetesPedigreeFunction, new_role = "predictor") %>% 
+  update_role(Age, new_role = "ID")
+
+data_diabetes_recipe
+summary(data_diabetes_recipe)
+```
+
+15. Pre processing data dari hasil recipe menjadi daa training dan data testing
+```{r pre_proccesing}
+data_diabetes_training <- data_diabetes_recipe %>% 
+  prep() %>% 
+  bake(training(data_diabetes_split))
+glimpse(data_diabetes_training)
+
+data_diabetes_testing <- data_diabetes_recipe %>% 
+  prep() %>% 
+  bake(testing(data_diabetes_split))
+glimpse(data_diabetes_testing)
+```
+
+
+16. Melakukan Pemodelan dengan Linear Regression
+
+```{r}
+data_diabetes_regresi <- linear_reg(mode = "regression") %>% 
+  set_engine("lm") %>% 
+  fit(Outcome ~ . -Age, data = data_diabetes_training)
+
+data_diabetes_regresi
+```
+
+17. Pengetesan pengujian performa
+
+```{r}
+data_diabetes_regresi %>% 
+  predict(data_diabetes_testing) %>% 
+  bind_cols(data_diabetes_testing) %>% 
+  metrics(truth = Outcome, estimate = .pred)
 ```
 
 
