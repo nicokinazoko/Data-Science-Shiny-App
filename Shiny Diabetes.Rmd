@@ -181,65 +181,65 @@ data_diabetes %>%
 
 11. Pemecahan data menjadi data training dan data testing
 ```{r split_data}
-data_diabetes_split <- initial_split(data_diabetes)
-data_diabetes_split
+#data_diabetes_split <- initial_split(data_diabetes)
+#data_diabetes_split
 ```
 
 12. Mengecek data dari data training
 ```{r training}
-training(data_diabetes_split)
+#training(data_diabetes_split)
 ```
 
 13. Mengecek data dari data testing
 ```{r testing}
 
-testing(data_diabetes_split)
+#testing(data_diabetes_split)
 ```
 
 14. Membuat Role dari variabel test untuk sebagai predictor
 ```{r }
 
-data_diabetes_recipe <- training(data_diabetes_split) %>% 
-  recipe() %>% 
-  update_role(Outcome, new_role = "outcome") %>% 
-  update_role(Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin,BMI,DiabetesPedigreeFunction, new_role = "predictor") %>% 
-  update_role(Age, new_role = "ID")
+#data_diabetes_recipe <- training(data_diabetes_split) %>% 
+  #recipe() %>% 
+  #update_role(Outcome, new_role = "outcome") %>% 
+  #update_role(Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin,BMI,#DiabetesPedigreeFunction, new_role = "predictor") %>% 
+ # update_role(Age, new_role = "ID")
 
-data_diabetes_recipe
-summary(data_diabetes_recipe)
+#data_diabetes_recipe
+#summary(data_diabetes_recipe)
 ```
 
 15. Pre processing data dari hasil recipe menjadi daa training dan data testing
 ```{r pre_proccesing}
-data_diabetes_training <- data_diabetes_recipe %>% 
-  prep() %>% 
-  bake(training(data_diabetes_split))
-glimpse(data_diabetes_training)
+#data_diabetes_training <- data_diabetes_recipe %>% 
+  #prep() %>% 
+ # bake(training(data_diabetes_split))
+#glimpse(data_diabetes_training)
 
-data_diabetes_testing <- data_diabetes_recipe %>% 
-  prep() %>% 
-  bake(testing(data_diabetes_split))
-glimpse(data_diabetes_testing)
+#data_diabetes_testing <- data_diabetes_recipe %>% 
+  #prep() %>% 
+ # bake(testing(data_diabetes_split))
+#glimpse(data_diabetes_testing)
 ```
 
 
 16. Melakukan Pemodelan dengan Linear Regression
 
 ```{r}
-data_diabetes_regresi <- linear_reg(mode = "regression") %>% 
-  set_engine("lm") %>% 
-  fit(Outcome ~ . -Age, data = data_diabetes_training)
+#data_diabetes_regresi <- linear_reg(mode = "regression") %>% 
+ # set_engine("lm") %>% 
+  #fit(Outcome ~ . -Age, data = data_diabetes_training)
 
-data_diabetes_regresi
+#data_diabetes_regresi
 ```
 
 17. Pengetesan pengujian performa
 
 ```{r}
-data_diabetes_regresi %>% 
-  predict(data_diabetes_testing) %>% 
-  bind_cols(data_diabetes_testing) %>% 
-  metrics(truth = Outcome, estimate = .pred)
+#data_diabetes_regresi %>% 
+ # predict(data_diabetes_testing) %>% 
+  #bind_cols(data_diabetes_testing) %>% 
+  #metrics(truth = Outcome, estimate = .pred)
 ```
 
 
